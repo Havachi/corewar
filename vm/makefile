@@ -1,4 +1,4 @@
-SRCS = ./src/main.c ./src/args.c
+SRCS = ./src/main.c ./src/instruction.c ./src/stack.c ./src/utils.c
 INCS = ./inc
 OBJS = ${SRCS:.c=.o}
 CFLAGS = -Wall -Werror -Wextra

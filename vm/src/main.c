@@ -1,68 +1,59 @@
 #include "corewar.h"
 
+void	usage()
+{
+	printf("Usage: PROG_NAME <file>\n");
+	exit(1);
+}
+uint8_t	*load_file(char *filename)
+{
+	FILE		*f;
+	uint8_t		*code;
+	struct stat	st;
+	
+	code = NULL;
+	f = fopen(filename, "r");
+	if(f)
+	{
+		fstat(fileno(f), &st);
+		code = (uint8_t *)malloc(st.st_size);
+		fread((void *)code, 1, st.st_size, f);		
+	} 
+	else
+	{
+		fprintf(stderr, "ERROR: Cannot open file %s\n", filename);
+		usage();
+	}
+	return (code);
+}
 int main(int ac, char **av)
 {
-	int running;
-	int ret;
+	printf("Booting up...\n");
+	if (ac != 2)
+	{
+		usage();
+	}
 	
-	running = 1;
-	ret = process_args(ac, av);
-	if(ret != SIG_OK)
+	uint8_t	*code;
+	uint8_t *ip;
+	STACK data;
+	instruction ops[256];
+	int i;
+
+	for (i = 0; i < 256; i++)
 	{
-		__return(ret);
+		ops[i] = op_nop;
 	}
-	while (running)
+	ops['c'] = op_push_char;
+	ops['e'] = op_emit;
+	code = load_file(av[1]);
+	data = stack_new(1024);
+	ip = code;
+	while (*ip != 'h')
 	{
-		
-	//	uint16_t instr = mem_read(reg[R_PC]++);
-	//	uint16_t op = instr >> 12;
-		uint16_t op = 1;
-		switch (op)
-		{
-			case OP_BR:
-				break;
-			case OP_ADD:
-				break;
-			case OP_LD:
-				break;
-			case OP_ST:
-				break;
-			case OP_JSR:
-				break;
-			case OP_AND:
-				break;
-			case OP_LDR:
-				break;
-			case OP_STR:
-				break;
-			case OP_RTI:
-				break;
-			case OP_NOT:
-				break;
-			case OP_LDI:
-				break;
-			case OP_JMP:
-				break;
-			case OP_RES:
-				break;
-			case OP_LEA:
-				break;
-			case OP_TRAP:
-				break;
-			default:
-				break;
-		}	
+		ip = ops[*ip](ip, &data);
 	}
-	__return(SIG_OK);
-}
-void __return (int value)
-{
-	
-	if(value == 3)
-	{
-		fprintf(stderr, "%s [options]\n", PROG_NAME);	
-		
-	}
-	fprintf(stdout, "Return with code (%d)", (int)value);
-	exit (value);
+	(void)code;
+	printf("Shutting down...\n");
+	return (0);
 }
