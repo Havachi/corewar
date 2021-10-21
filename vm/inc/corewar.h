@@ -11,6 +11,7 @@
 # ifndef STACK_H
 #  include "stack.h"
 # endif
+# include "ops.h"
 # include "instruction.h"
 # define PROG_NAME "coreware"
 #endif

@@ -11,8 +11,8 @@ $(NAME) : $(OBJS)
 	gcc $(CFLAGS) $(OBJS) -o $(NAME)
 all: $(NAME)
 
-run:
-	./$(NAME)
+hello:
+	./$(NAME) ./byte_exemple/hello_world
 clean : 
 	rm $(OBJS)
 fclean : clean

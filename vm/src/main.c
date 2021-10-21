@@ -2,7 +2,10 @@
 
 void	usage()
 {
-	printf("Usage: PROG_NAME <file>\n");
+	char	*prog_name;
+	
+	prog_name = PROG_NAME;
+	printf("Usage: %s <file>\n", prog_name);
 	exit(1);
 }
 uint8_t	*load_file(char *filename)
@@ -38,22 +41,16 @@ int main(int ac, char **av)
 	uint8_t *ip;
 	STACK data;
 	instruction ops[256];
-	int i;
 
-	for (i = 0; i < 256; i++)
-	{
-		ops[i] = op_nop;
-	}
-	ops['c'] = op_push_char;
-	ops['e'] = op_emit;
+	fetch_ops(ops);
 	code = load_file(av[1]);
 	data = stack_new(1024);
 	ip = code;
-	while (*ip != 'h')
+	(void)code;
+	while (*ip != OP_HALT)
 	{
 		ip = ops[*ip](ip, &data);
 	}
-	(void)code;
 	printf("Shutting down...\n");
 	return (0);
 }
